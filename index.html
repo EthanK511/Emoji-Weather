@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Emoji App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Weather Emoji</h1>
+      <p class="subtitle">Live weather + matching emoji</p>
+
+      <form id="weather-form" class="search" autocomplete="off">
+        <label for="city" class="sr-only">City</label>
+        <input
+          id="city"
+          name="city"
+          type="text"
+          placeholder="Enter a city (e.g., Tokyo)"
+          required
+        />
+        <label for="unit" class="sr-only">Temperature unit</label>
+        <select id="unit" name="unit" aria-label="Temperature unit">
+          <option value="celsius" selected>Celsius (°C)</option>
+          <option value="fahrenheit">Fahrenheit (°F)</option>
+        </select>
+        <button type="submit">Get Weather</button>
+      </form>
+
+      <section id="status" class="status" aria-live="polite"></section>
+
+      <section id="result" class="card hidden" aria-live="polite">
+        <div id="emoji" class="emoji" aria-label="Weather emoji">🌤️</div>
+        <h2 id="location">—</h2>
+        <p id="condition" class="condition">—</p>
+        <p id="temp" class="temp">—</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
