@@ -1,0 +1,84 @@
+:root {
+  --text: #eef2ff;
+  --overlay: rgb(3 7 18 / 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: saturate(1.08) contrast(1.02);
+  transform: scale(1.02);
+}
+
+.background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--overlay), var(--overlay));
+}
+
+.center {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.search-form {
+  width: min(720px, 100%);
+}
+
+.search-form input {
+  width: 100%;
+  border: 0;
+  border-radius: 16px;
+  padding: 18px 22px;
+  font-size: 1.06rem;
+  color: #e2e8f0;
+  background: rgb(15 23 42 / 0.56);
+  backdrop-filter: blur(8px);
+  outline: none;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+}
+
+.search-form input::placeholder {
+  color: rgb(226 232 240 / 0.74);
+}
+
+.search-form input:focus {
+  background: rgb(15 23 42 / 0.62);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

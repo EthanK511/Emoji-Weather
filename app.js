@@ -7,6 +7,18 @@ const emojiEl = document.getElementById("emoji");
 const locationEl = document.getElementById("location");
 const conditionEl = document.getElementById("condition");
 const tempEl = document.getElementById("temp");
+const weatherBgEl = document.getElementById("weather-bg");
+let lastWeatherData = null;
+
+const weatherBackgroundGifs = {
+  clear: "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
+  cloudy: "https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif",
+  fog: "https://media.giphy.com/media/l0Iy0ZURatgztvYxq/giphy.gif",
+  rain: "https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif",
+  snow: "https://media.giphy.com/media/l3vR85PnGsBwu1PFK/giphy.gif",
+  thunder: "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
+  default: "https://media.giphy.com/media/l0HlPwMAzh13pcZ20/giphy.gif",
+};
 
 const weatherMap = {
   0: { text: "Clear sky", emoji: "☀️" },
@@ -43,6 +55,45 @@ function getWeatherInfo(code) {
   return weatherMap[code] || { text: "Unknown weather", emoji: "🌈" };
 }
 
+function getWeatherBackgroundKey(code) {
+  if (code === 0 || code === 1) {
+    return "clear";
+  }
+
+  if (code === 2 || code === 3) {
+    return "cloudy";
+  }
+
+  if (code === 45 || code === 48) {
+    return "fog";
+  }
+
+  if ([71, 73, 75, 77, 85, 86].includes(code)) {
+    return "snow";
+  }
+
+  if ([95, 96, 99].includes(code)) {
+    return "thunder";
+  }
+
+  if (
+    [
+      51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82,
+    ].includes(code)
+  ) {
+    return "rain";
+  }
+
+  return "default";
+}
+
+function updateWeatherBackground(code) {
+  const key = getWeatherBackgroundKey(code);
+  const gifUrl = weatherBackgroundGifs[key] || weatherBackgroundGifs.default;
+
+  weatherBgEl.style.backgroundImage = `linear-gradient(rgb(2 6 23 / 0.45), rgb(2 6 23 / 0.45)), url("${gifUrl}")`;
+}
+
 async function geocodeCity(city) {
   const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     city
@@ -68,8 +119,8 @@ async function geocodeCity(city) {
   };
 }
 
-async function fetchWeather(latitude, longitude, unit) {
-  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=${unit}`;
+async function fetchWeather(latitude, longitude) {
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius`;
 
   const response = await fetch(weatherUrl);
   if (!response.ok) {
@@ -88,15 +139,25 @@ function setStatus(message) {
   statusEl.textContent = message;
 }
 
-function renderWeather(location, current, unit) {
-  const info = getWeatherInfo(current.weather_code);
+function getDisplayTemperature(celsiusValue, unit) {
+  if (unit === "fahrenheit") {
+    return (celsiusValue * 9) / 5 + 32;
+  }
+
+  return celsiusValue;
+}
+
+function renderWeather(location, weatherData, unit) {
+  const info = getWeatherInfo(weatherData.weatherCode);
   const unitLabel = unit === "fahrenheit" ? "°F" : "°C";
   const locationParts = [location.name, location.region, location.country].filter(Boolean);
+  const displayTemp = getDisplayTemperature(weatherData.temperatureCelsius, unit);
 
+  updateWeatherBackground(weatherData.weatherCode);
   emojiEl.textContent = info.emoji;
   locationEl.textContent = locationParts.join(", ");
   conditionEl.textContent = info.text;
-  tempEl.textContent = `${Math.round(current.temperature_2m)}${unitLabel}`;
+  tempEl.textContent = `${Math.round(displayTemp)}${unitLabel}`;
   resultEl.classList.remove("hidden");
 }
 
@@ -118,12 +179,29 @@ form.addEventListener("submit", async (event) => {
     const location = await geocodeCity(city);
 
     setStatus("Fetching live weather...");
-    const current = await fetchWeather(location.latitude, location.longitude, unit);
+    const current = await fetchWeather(location.latitude, location.longitude);
 
-    renderWeather(location, current, unit);
+    lastWeatherData = {
+      location,
+      weatherData: {
+        temperatureCelsius: current.temperature_2m,
+        weatherCode: current.weather_code,
+      },
+    };
+
+    renderWeather(lastWeatherData.location, lastWeatherData.weatherData, unit);
     setStatus("Updated.");
   } catch (error) {
     resultEl.classList.add("hidden");
     setStatus(error.message || "Something went wrong.");
   }
+});
+
+unitInput.addEventListener("change", () => {
+  if (!lastWeatherData) {
+    return;
+  }
+
+  renderWeather(lastWeatherData.location, lastWeatherData.weatherData, unitInput.value);
+  setStatus("Unit updated.");
 });

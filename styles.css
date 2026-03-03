@@ -12,6 +12,7 @@
 }
 
 body {
+  position: relative;
   margin: 0;
   min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -20,6 +21,16 @@ body {
   display: grid;
   place-items: center;
   padding: 1rem;
+}
+
+.weather-bg {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgb(2 6 23 / 0.45), rgb(2 6 23 / 0.45));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 .container {
@@ -86,7 +97,6 @@ button:hover {
 .card {
   margin-top: 1rem;
   text-align: center;
-  border: 1px solid rgb(148 163 184 / 0.25);
   border-radius: 14px;
   background: rgb(15 23 42 / 0.7);
   padding: 1rem;

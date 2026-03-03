@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Weather Focus Tab",
+  "description": "Minimal new tab with weather-based background and search.",
+  "version": "1.0.0",
+  "permissions": ["geolocation"],
+  "host_permissions": [
+    "https://api.open-meteo.com/*",
+    "https://geocoding-api.open-meteo.com/*"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}

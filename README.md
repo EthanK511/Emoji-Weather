@@ -1,34 +1,29 @@
-# Weather Emoji App
+# Weather Focus Tab (Chrome Extension)
 
-A tiny web app that fetches **live weather data** and shows a matching **emoji**.
+A minimal Chrome new-tab extension inspired by clean dashboard pages:
 
-## Features
+- Full-screen weather-based background
+- One centered search bar
+- No extra widgets
 
-- Search weather by city name
-- Choose temperature unit: Celsius or Fahrenheit
-- Uses Open-Meteo Geocoding + Forecast APIs (no API key needed)
-- Shows city with state/region (when available) and country
-- Maps weather conditions to friendly emojis
+## How it works
 
-## Run locally
+- Uses browser geolocation to get your coordinates
+- Fetches current weather code from Open-Meteo
+- Picks a matching visual background (clear, cloudy, rain, snow, etc.)
 
-You can run this with any static server.
+## Install in Chrome
 
-### Option 1: Python
+1. Open `chrome://extensions`
+2. Enable **Developer mode**
+3. Click **Load unpacked**
+4. Select this folder: `/home/speedye/GitHub/Emoji-Weather`
 
-```bash
-cd /home/speedye/GitHub/Emoji-Weather
-python3 -m http.server 8080
-```
+Open a new tab to see it.
 
-Open: http://localhost:8080
+## Files used by the extension
 
-### Option 2: VS Code Live Server
-
-Open `index.html` with Live Server.
-
-## Files
-
-- `index.html` – UI
-- `styles.css` – styling
-- `app.js` – API calls + emoji mapping
+- `manifest.json` – extension manifest and new tab override
+- `newtab.html` – minimal page with only search UI
+- `newtab.css` – full-screen styling
+- `newtab.js` – weather fetch + background switching + search behavior
